@@ -419,7 +419,7 @@ class WikiBuffer
         open.each_char do |e|
           ret << "<#{list_tag_for(e)}><#{list_inner_tag_for(e)}>"
         end
-        
+
         ret << content
 
         last = pieces.clone
@@ -462,5 +462,3 @@ require File.join(File.expand_path(File.dirname(__FILE__)), "wiki_buffer", "html
 require File.join(File.expand_path(File.dirname(__FILE__)), "wiki_buffer", "table")
 require File.join(File.expand_path(File.dirname(__FILE__)), "wiki_buffer", "var")
 require File.join(File.expand_path(File.dirname(__FILE__)), "wiki_buffer", "link")
-# load all extensions
-Dir[File.join(File.expand_path(File.dirname(__FILE__)), "extensions/*.rb")].each { |r| require r }
