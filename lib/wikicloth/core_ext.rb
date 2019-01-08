@@ -1,10 +1,10 @@
-begin
-  require 'rinku'
-rescue LoadError
+# begin
+#   require 'rinku'
+# rescue LoadError
   require 'twitter-text'
   require 'nokogiri'
   require 'htmlentities'
-end
+# end
 
 READ_MODE = "r:UTF-8"
 
@@ -30,11 +30,11 @@ module ExtendedString
     self.gsub(/\W+/, '-').gsub(/^-+/,'').gsub(/-+$/,'').downcase
   end
 
-  if defined? Rinku
-    def auto_link
-      Rinku.auto_link(to_s)
-    end
-  else
+  # if defined? Rinku
+  #   def auto_link
+  #     Rinku.auto_link(to_s)
+  #   end
+  # else
     def auto_link
       doc = Nokogiri::HTML::DocumentFragment.parse(to_s)
       doc.xpath(".//text()").each do |node|
@@ -44,7 +44,7 @@ module ExtendedString
       end
       doc.to_s
     end
-  end
+  # end
 
   def last(n)
     self[-n,n]
