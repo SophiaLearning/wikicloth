@@ -42,8 +42,8 @@ class WikiBuffer::HTMLElement < WikiBuffer
   end
 
   def run_globals?
-    return false if self.in_template? && self.element_name == "noinclude"
-    return false if !self.in_template? && self.element_name == "includeonly"
+    return false if self.element_name == "noinclude" && self.in_template?
+    return false if self.element_name == "includeonly" && !self.in_template?
     return Extension.run_globals?(self.element_name) if Extension.element_exists?(self.element_name)
     return DISABLE_GLOBALS_FOR.include?(self.element_name) ? false : true
   end
