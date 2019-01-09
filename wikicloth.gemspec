@@ -16,13 +16,12 @@ spec = Gem::Specification.new do |s|
   s.test_files = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.require_path = "lib"
   s.description = File.read("README")
-  s.has_rdoc = false
   s.extra_rdoc_files = ["README","MIT-LICENSE"]
   s.description = %q{mediawiki parser}
   s.license = "MIT"
   s.add_dependency 'builder'
   s.add_dependency 'expression_parser'
-  s.add_dependency 'twitter-text'
+  s.add_dependency 'twitter-text', '< 2.0.0'
   s.add_dependency 'nokogiri'
   s.add_dependency 'htmlentities'
   s.add_development_dependency 'test-unit'
