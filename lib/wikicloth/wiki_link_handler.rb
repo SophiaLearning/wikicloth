@@ -1,4 +1,5 @@
-# encoding: utf-8
+# frozen_string_literal: true
+
 module WikiCloth
 
 class WikiLinkHandler < WikiNamespaces
@@ -56,7 +57,7 @@ class WikiLinkHandler < WikiNamespaces
         indices[section.depth] = 0 if indices[section.depth].nil?
         indices[section.depth] += 1
         ret += "</li><li><a href=\"##{section.id}\">#{indices[0..section.depth].compact.join('.') + " " if toc_numbered}#{section.title}</a>"
-      else 
+      else
         indices[section.depth] = 0 if indices[section.depth].nil?
         indices[section.depth] += 1
         indices = indices[0..section.depth]

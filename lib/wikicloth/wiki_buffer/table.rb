@@ -1,10 +1,13 @@
+# frozen_string_literal: true
+
 module WikiCloth
 
 class WikiBuffer::Table < WikiBuffer
 
-  def initialize(data="",options={})
+  def initialize(data = '', options={})
     super(data,options)
     self.buffer_type = "table"
+    @check_cell_data = false
     @start_table = true
     @start_row = false
     @start_caption = false
@@ -27,7 +30,7 @@ class WikiBuffer::Table < WikiBuffer
   def to_html
     row_count = 0
     ret = "<table" + (params[0].blank? ? "" : " #{params[0].strip}") + ">"
-    ret += "<caption" + (self.table_caption_attributes.blank? ? "" : " #{table_caption_attributes.strip}") + 
+    ret += "<caption" + (self.table_caption_attributes.blank? ? "" : " #{table_caption_attributes.strip}") +
 	">#{table_caption.strip}</caption>" unless self.table_caption.blank?
     for row in rows
       row_count += 1
@@ -103,7 +106,7 @@ class WikiBuffer::Table < WikiBuffer
   end
 
   def new_char()
-    if @check_cell_data == 1
+    if @check_cell_data
       case
       when current_char != '|' && @start_caption == false && (self.rows[-1][-1].nil? || self.rows[-1][-1][:style].blank?)
         self.next_cell() if self.rows[-1][-1].nil?
@@ -113,19 +116,19 @@ class WikiBuffer::Table < WikiBuffer
         self.table_caption_attributes = self.data
         self.data = ""
       end
-      @check_cell_data = 0
+      @check_cell_data = false
     end
 
     case
     # Next table cell in row (TD)
     when current_char == "|" && (previous_char == "\n" || previous_char == "|") && @in_quotes == false
-      self.data.chop! if self.data[-1,1] == "|"
+      self.data = self.data.chop if self.data[-1,1] == "|"
       self.next_cell() unless self.data.blank? && previous_char == "|"
       self.data = ""
 
     # Next table cell in row (TH)
     when current_char == "!" && (previous_char == "\n" || previous_char == "!") && @in_quotes == false
-      self.data.chop!
+      self.data = self.data.chop
       self.next_cell('th')
       self.data = ""
 
@@ -143,7 +146,7 @@ class WikiBuffer::Table < WikiBuffer
 
     # Table cell might have attributes
     when current_char == '|' && previous_char != "\n" && @in_quotes == false
-      @check_cell_data = 1 unless @start_table
+      @check_cell_data = true unless @start_table
 
     # End table caption
     when current_char == "\n" && @start_caption == true && @in_quotes == false
@@ -175,13 +178,13 @@ class WikiBuffer::Table < WikiBuffer
 
     # Start new table row
     when current_char == '-' && previous_char == '|' && @in_quotes == false
-      self.data.chop!
+      self.data = self.data.chop
       self.rows[-1].pop
       self.next_row()
       @start_row = true
 
     else
-      self.data << current_char
+      self.data += current_char
     end
 
     return true

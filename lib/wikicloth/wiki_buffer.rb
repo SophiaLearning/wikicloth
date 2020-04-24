@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WikiCloth
 class WikiBuffer
 
@@ -174,12 +176,12 @@ class WikiBuffer
     when current_char == "\n"
       # Underline, and Strikethrough
       if @options[:extended_markup] == true
-        self.data.gsub!(/---([^-]+)---/,"<strike>\\1</strike>")
-        self.data.gsub!(/_([^_]+)_/,"<u>\\1</u>")
+        self.data = data.gsub(/---([^-]+)---/,"<strike>\\1</strike>")
+        self.data = data.gsub(/_([^_]+)_/,"<u>\\1</u>")
       end
 
       # Behavior Switches
-      self.data.gsub!(/__([\w]+)__/) { |r|
+      self.data = data.gsub(/__([\w]+)__/) { |r|
         case behavior_switch_key_name($1)
         when "behavior_switches.toc"
           @options[:link_handler].toc(@options[:sections], @options[:toc_numbered])
@@ -193,7 +195,7 @@ class WikiBuffer
       }
 
       # Horizontal Rule
-      self.data.gsub!(/^([-]{4,})/) { |r| "<hr />" }
+      self.data = data.gsub(/^([-]{4,})/) { |r| "<hr />" }
 
       render_bold_italic()
 
@@ -213,7 +215,7 @@ class WikiBuffer
 
       # Headings
       is_heading = false
-      self.data.gsub!(/^([=]{1,6})\s*(.*?)\s*(\1)/) { |r|
+      self.data = data.gsub(/^([=]{1,6})\s*(.*?)\s*(\1)/) { |r|
         is_heading = true
         (@paragraph_open ? "</p>" : "") + gen_heading($1.length,$2)
       }
@@ -237,7 +239,7 @@ class WikiBuffer
       self.params << self.data
       self.data = ""
     else
-      self.data << current_char
+      self.data += current_char
     end
     return true
   end
@@ -267,7 +269,7 @@ class WikiBuffer
   end
 
   def get_id_for(val)
-    val.gsub!(/[^A-Za-z0-9_]+/,'')
+    val = val.gsub(/[^A-Za-z0-9_]+/,'')
     @idmap ||= {}
     @idmap[val] ||= 0
     @idmap[val] += 1
@@ -380,12 +382,12 @@ class WikiBuffer
       end
 
     index = 0
-    self.data.gsub!(/([\']{2,5})/) do
+    self.data = data.gsub(/([\']{2,5})/) do
         output = commands[index][:output]
         index += 1
         output
       end
-    self.data << commands.last[:output]
+    self.data += commands.last[:output]
   end
 
   def render_list_data()
@@ -408,19 +410,19 @@ class WikiBuffer
         open = pieces[common..-1]
 
         close.each_char do |e|
-          ret << "</#{list_inner_tag_for(e)}></#{list_tag_for(e)}>"
+          ret += "</#{list_inner_tag_for(e)}></#{list_tag_for(e)}>"
         end
         if open == '' && pieces != ''
           if last != ''
-            ret << "</#{list_inner_tag_for(pieces[-1,1])}>"
+            ret += "</#{list_inner_tag_for(pieces[-1,1])}>"
           end
-          ret << "<#{list_inner_tag_for(pieces[-1,1])}>"
+          ret += "<#{list_inner_tag_for(pieces[-1,1])}>"
         end
         open.each_char do |e|
-          ret << "<#{list_tag_for(e)}><#{list_inner_tag_for(e)}>"
+          ret += "<#{list_tag_for(e)}><#{list_inner_tag_for(e)}>"
         end
 
-        ret << content
+        ret += content
 
         last = pieces.clone
       end

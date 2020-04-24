@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'builder'
 # if i18n gem loaded use it instead
 require File.join(File.expand_path(File.dirname(__FILE__)), "wikicloth", "i18n") unless defined?(I18n)
@@ -58,7 +60,7 @@ module WikiCloth
     end
 
     def render(opt={})
-      self.options = { :noedit => false, :fast => true, :output => :html, :link_handler => self.link_handler, 
+      self.options = { :noedit => false, :fast => true, :output => :html, :link_handler => self.link_handler,
 	:params => self.params, :sections => self.sections }.merge(self.options).merge(opt)
       self.options[:link_handler].params = options[:params]
 
@@ -66,9 +68,10 @@ module WikiCloth
 
       I18n.with_locale(locale) do
         data = self.sections.collect { |s| s.render(self.options) }.join
-        data.gsub!(/<!--(.|\s)*?-->/,"")
-        data << "\n" if data.last(1) != "\n"
-        data << "garbage"
+                   .gsub(/<!--(.|\s)*?-->/,"")
+
+        data += "\n" if data.last(1) != "\n"
+        data += "garbage"
 
         buffer = WikiBuffer.new("",options)
 
@@ -143,7 +146,7 @@ module WikiCloth
     end
 
     def get_id_for(val)
-      val.gsub!(/[^A-Za-z0-9_]+/,'')
+      val = val.gsub(/[^A-Za-z0-9_]+/,'')
       @idmap ||= {}
       @idmap[val] ||= 0
       @idmap[val] += 1

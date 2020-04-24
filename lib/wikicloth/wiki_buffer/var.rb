@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'expression_parser'
 require 'digest/md5'
 require 'uri'
@@ -63,7 +65,7 @@ class WikiBuffer::Var < WikiBuffer
       ret.to_s
     else
       # put template at beginning of buffer
-      template_stack = @options[:buffer].buffers.collect { |b| b.get_param("__name") if b.instance_of?(WikiBuffer::HTMLElement) && 
+      template_stack = @options[:buffer].buffers.collect { |b| b.get_param("__name") if b.instance_of?(WikiBuffer::HTMLElement) &&
         b.element_name == "template" }.compact
       if template_stack.last == params[0]
         debug_tree = @options[:buffer].buffers.collect { |b| b.debug }.join("-->")
@@ -78,9 +80,9 @@ class WikiBuffer::Var < WikiBuffer
         # if we have a valid cache fragment use it
         return @options[:cache][key][key_digest] unless @options[:cache].nil? || @options[:cache][key].nil? || @options[:cache][key][key_digest].nil?
 
-        ret = @options[:link_handler].include_resource(key,key_options).to_s
+        ret = @options[:link_handler]
+          .include_resource(key,key_options).to_s.gsub(/<!--(.|\s)*?-->/,"")
 
-        ret.gsub!(/<!--(.|\s)*?-->/,"")
         count = 0
         tag_attr = key_options.collect { |p|
           if p.instance_of?(Hash)
@@ -283,7 +285,7 @@ class WikiBuffer::Var < WikiBuffer
       end
 
     else
-      self.data << current_char
+      self.data += current_char
       if @tag_start
         # FIXME: template params and templates colliding
         if @tag_size > 3

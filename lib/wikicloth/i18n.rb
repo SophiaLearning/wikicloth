@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'yaml'
 module I18n
 
@@ -23,9 +25,9 @@ module I18n
       use_locale = @@translations[locale].nil? || @@translations[locale].empty? ? default_locale : locale
 
       if !@@translations[use_locale].nil? && @@translations[use_locale].has_key?(key)
-        add_vars(@@translations[use_locale][key], options)
+        @@translations[use_locale][key] = add_vars(@@translations[use_locale][key], options)
       elsif use_locale != default_locale && @@translations[default_locale].has_key?(key)
-        add_vars(@@translations[default_locale][key], options)
+        @@translations[default_locale][key] = add_vars(@@translations[default_locale][key], options)
       else
         "translation missing: #{locale}, #{key}"
       end
@@ -50,7 +52,7 @@ module I18n
       @@available_locales = []
       @@translations = {}
       load_path.each do |path|
-        Dir[path].each do |file| 
+        Dir[path].each do |file|
           begin
             data = YAML::load(File.read(file))
             data.each do |key,value|
@@ -99,7 +101,7 @@ module I18n
 
     def add_vars(string, options)
       options.each do |key,value|
-        string.gsub!(/(%\{#{key}\})/, value.to_s)
+        string = string.gsub(/(%\{#{key}\})/, value.to_s)
       end
       string
     end

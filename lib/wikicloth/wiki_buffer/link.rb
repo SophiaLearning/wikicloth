@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WikiCloth
 
 class WikiBuffer::Link < WikiBuffer
@@ -25,7 +27,7 @@ class WikiBuffer::Link < WikiBuffer
     else
       case
       when !self.internal_link
-        return "[#{params[0]}]"        
+        return "[#{params[0]}]"
       when params[0] =~ /^:(.*)/
         return link_handler.link_for(params[0],params[1])
       when params[0] =~ /^\s*([^\]\s:]+)\s*:(.*)$/

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 begin
   require 'pygments.rb'
 rescue LoadError
@@ -29,7 +31,7 @@ module WikiCloth
 
       if defined?(Pygments)
 	begin
-	  content = "<style type=\"text/css\">\n#{Pygments.css}\n</style>\n"+Pygments.highlight(content, :lexer => buffer.element_attributes['lang'].downcase).gsub!('<pre>', '').gsub!('</pre>', '')
+	  content = "<style type=\"text/css\">\n#{Pygments.css}\n</style>\n"+Pygments.highlight(content, :lexer => buffer.element_attributes['lang'].downcase).gsub('<pre>', '').gsub('</pre>', '')
 	rescue => err
 	  error = "<span class=\"error\">#{err.message}</span>"
 	end

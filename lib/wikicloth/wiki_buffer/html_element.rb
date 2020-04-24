@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rexml/document'
 
 module WikiCloth
@@ -88,8 +90,8 @@ class WikiBuffer::HTMLElement < WikiBuffer
 
     tmp = elem.tag!(self.element_name, self.element_attributes) { |x| x << self.element_content }
     unless ALLOWED_ELEMENTS.include?(self.element_name)
-      tmp.gsub!(/[\-!\|&"\{\}\[\]]/) { |r| self.escape_char(r) }
-      return tmp.gsub('<', '&lt;').gsub('>', '&gt;')
+      return tmp.gsub(/[\-!\|&"\{\}\[\]]/) { |r| self.escape_char(r) }
+                .gsub('<', '&lt;').gsub('>', '&gt;')
     end
     tmp
   end
@@ -240,9 +242,9 @@ class WikiBuffer::HTMLElement < WikiBuffer
 
     else
       if @start_tag == 0 && ESCAPED_TAGS.include?(self.element_name)
-        self.data << self.escape_char(current_char)
+        self.data += self.escape_char(current_char)
       else
-        self.data << current_char
+        self.data += current_char
       end
     end
     return true

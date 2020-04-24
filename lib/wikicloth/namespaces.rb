@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WikiCloth
 
   class WikiNamespaces
@@ -38,7 +40,7 @@ module WikiCloth
     def method_missing(method, *args)
       if method.to_s =~ /^([a-z]+)_namespace_names$/
         @@ns_cache ||= {}
-        @@ns_cache[$1] ||= get_namespace_names_for($1) 
+        @@ns_cache[$1] ||= get_namespace_names_for($1)
       elsif method.to_s =~ /^([a-z]+)_namespace\?$/
         namespace_type(args.first) == $1.to_sym ? true : false
       else

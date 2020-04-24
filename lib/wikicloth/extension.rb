@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WikiCloth
   class Extension
 
@@ -19,7 +21,7 @@ module WikiCloth
         options  = args.last.is_a?(Hash) ? args.pop : {}
         key      = args.shift
 
-        html_elements[key] = { :klass => self, :block => block, :options => { 
+        html_elements[key] = { :klass => self, :block => block, :options => {
           :skip_html => false, :run_globals => true }.merge(options) }
       end
 
