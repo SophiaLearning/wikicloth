@@ -102,7 +102,7 @@ module WikiCloth
 
     # Replace a section, along with any sub-section in the document
     def put_section(id,data)
-      data = @wikicloth.sections.collect { |s| s.wikitext({ :replace => { id => data.last(1) == "\n" ? data : "#{data}\n" } }) }.join
+      data = @wikicloth.sections.collect { |s| s.wikitext({ :replace => { id => data[-1] == "\n" ? data : "#{data}\n" } }) }.join
       @wikicloth = WikiCloth.new(:data => data, :link_handler => self, :params => @options[:params])
     end
 

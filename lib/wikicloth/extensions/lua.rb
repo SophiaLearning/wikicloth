@@ -18,7 +18,7 @@ module WikiCloth
         begin
           arglist = ''
           buffer.element_attributes.each do |key,value|
-            arglist += "#{key} = '#{value.addslashes}';"
+            arglist += "#{key} = '#{addslashes(value)}';"
           end
           lua_eval("#{arglist}\n#{buffer.element_content}").to_s
         rescue => err
@@ -80,5 +80,8 @@ module WikiCloth
       end
     end
 
+    def addslashes(str)
+      str.gsub(/['"\\\x0]/,'\\\\\0')
+    end
   end
 end

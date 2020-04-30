@@ -37,7 +37,7 @@ module WikiCloth
       refs = @options[:link_handler].references.collect { |r|
         next if r[:group] != group_match
         ref_count += 1
-        ref_name = (r[:name].nil? ? "" : r[:name].to_slug + "_")
+        ref_name = (r[:name].nil? ? "" : str_to_slug(r[:name]) + "_")
         ret = "<li id=\"cite_note-#{ref_name}#{ref_count}\"><b>"
         1.upto(r[:count]) { |x| ret += "<a href=\"#cite_ref-#{ref_name}#{ref_count}-#{x-1}\">" +
                 (r[:count] == 1 ? "^" : (x-1).to_s(26).tr('0-9a-p', 'a-z')) + "</a> " }
@@ -46,5 +46,9 @@ module WikiCloth
       "<ol>#{refs}</ol>"
     end
 
+    private
+    def str_to_slug(str)
+      str.gsub(/\W+/, '-').gsub(/^-+/,'').gsub(/-+$/,'').downcase
+    end
   end
 end

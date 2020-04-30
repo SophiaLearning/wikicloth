@@ -70,7 +70,7 @@ module WikiCloth
         data = self.sections.collect { |s| s.render(self.options) }.join
                    .gsub(/<!--(.|\s)*?-->/,"")
 
-        data += "\n" if data.last(1) != "\n"
+        data += "\n" if data[-1] != "\n"
         data += "garbage"
 
         buffer = WikiBuffer.new("",options)
