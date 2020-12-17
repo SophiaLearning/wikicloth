@@ -47,7 +47,10 @@ class WikiBuffer::HTMLElement < WikiBuffer
     return false if self.element_name == "noinclude" && self.in_template?
     return false if self.element_name == "includeonly" && !self.in_template?
     return Extension.run_globals?(self.element_name) if Extension.element_exists?(self.element_name)
-    return DISABLE_GLOBALS_FOR.include?(self.element_name) ? false : true
+    return false if DISABLE_GLOBALS_FOR.include?(self.element_name)
+    return false if in_quotes?
+
+    true
   end
 
   def to_html
@@ -184,27 +187,27 @@ class WikiBuffer::HTMLElement < WikiBuffer
       return false if self.element_name == @tag_check && NO_NEED_TO_CLOSE.include?(self.element_name)
 
     # new tag attr
-    when @start_tag == 2 && current_char == ' ' && self.in_quotes? == false
-      self.current_param = self.data
+    when @start_tag == 2 && current_char == ' ' && !in_quotes?
+      self.current_param = element_name == 'template' ? self.data.gsub('&quot;', '"') : self.data
       self.data = ""
       self.params << ""
 
     # tag attribute name
-    when @start_tag == 2 && current_char == '=' && self.in_quotes? == false
+    when @start_tag == 2 && current_char == '=' && !in_quotes?
       self.current_param = self.data
       self.data = ""
       self.name_current_param()
 
     # tag is now open
-    when @start_tag == 2 && previous_char != '/' && current_char == '>'
-      self.current_param = self.data
+    when @start_tag == 2 && previous_char != '/' && current_char == '>' && !in_quotes?
+      self.current_param = element_name == 'template' ? self.data.gsub('&quot;', '"') : self.data
       self.data = ""
       @start_tag = 0
       return false if SHORT_TAGS.include?(self.element_name)
       return false if self.element_name == @tag_check && NO_NEED_TO_CLOSE.include?(self.element_name)
 
     # tag is closed <example/>
-    when @start_tag == 2 && previous_char == '/' && current_char == '>'
+    when @start_tag == 2 && previous_char == '/' && current_char == '>' && !in_quotes?
       self.current_param = self.data.chop
       self.data = ""
       @start_tag = 0

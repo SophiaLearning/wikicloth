@@ -21,6 +21,15 @@ class WikiParser < WikiCloth::Parser
       "hello world"
     when "testparams"
       "{{{def|hello world}}} {{{1}}} {{{test}}} {{{nested|{{{2}}}}}}"
+    when "testparams2"
+      <<~TPL
+        <div class="wrapper">
+        <div>
+          Foo
+        </div>
+        {{{1}}}
+        </div>
+      TPL
     when "moreparamtest"
       "{{{{{test|bla}}|wtf}}}"
     when "loop"
@@ -334,6 +343,18 @@ EOS
     wiki = WikiParser.new(:data => "{{moreparamtest|p=othervar|busted=whoo}}")
     data = wiki.to_html
     assert data =~ /whoo/
+  end
+
+  test "nested templetes" do
+    wiki = WikiParser.new(:data => "{{testparams|[https://example.com/ Example]|test=bla|it worked|bla=whoo}}\n")
+    data = wiki.to_html
+    assert data =~ /href="https:\/\/example.com\/"/
+  end
+
+  test "nested templetes with markup" do
+    wiki = WikiParser.new(:data => "{{testparams2|[https://example.com/ Example]}}\n")
+    data = wiki.to_html
+    assert data =~ /href="https:\/\/example.com\/"/
   end
 
   test "table spanning template" do
