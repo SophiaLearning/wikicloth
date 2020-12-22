@@ -48,7 +48,7 @@ class WikiBuffer::HTMLElement < WikiBuffer
     return false if self.element_name == "includeonly" && !self.in_template?
     return Extension.run_globals?(self.element_name) if Extension.element_exists?(self.element_name)
     return false if DISABLE_GLOBALS_FOR.include?(self.element_name)
-    return false if in_quotes?
+    return false if in_quotes? && self.element_name == 'template'
 
     true
   end

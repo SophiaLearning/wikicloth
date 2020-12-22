@@ -30,6 +30,8 @@ class WikiParser < WikiCloth::Parser
         {{{1}}}
         </div>
       TPL
+    when "attrparam"
+      '<div class="{{{1}}}">FooBar</div>'
     when "moreparamtest"
       "{{{{{test|bla}}|wtf}}}"
     when "loop"
@@ -343,6 +345,12 @@ EOS
     wiki = WikiParser.new(:data => "{{moreparamtest|p=othervar|busted=whoo}}")
     data = wiki.to_html
     assert data =~ /whoo/
+  end
+
+  test 'template with attr param' do
+    wiki = WikiParser.new(data: "{{attrparam|foo}}\n")
+    data = wiki.to_html
+    assert data.include?('<div class="foo">FooBar</div>')
   end
 
   test "nested templetes" do
